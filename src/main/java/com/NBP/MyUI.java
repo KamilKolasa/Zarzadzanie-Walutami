@@ -60,7 +60,6 @@ public class MyUI extends UI{
         navigator.addView(Views.VIEW_raport_10.toString(), Raport10.class);
         navigator.addView(Views.VIEW_main.toString(), Main.class);
         navigator.navigateTo(Views.VIEW_main.toString());
-        System.out.println("INFO");
     }
 
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
