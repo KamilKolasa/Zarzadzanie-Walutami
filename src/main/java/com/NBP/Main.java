@@ -48,6 +48,7 @@ public class Main extends VerticalLayout implements View {
         for (Object e : oo) {
             listSymbols.add(e.toString());
         }
+
         String data = listSymbols.stream().collect(Collectors.joining("/"));
         navigator.navigateTo(Views.VIEW_raport_10.toString() + "/" + data);
     };
@@ -134,7 +135,7 @@ public class Main extends VerticalLayout implements View {
         return layout;
     }
 
-    public void generateRaport10() {//POMOC - czemu nie zapisuje do pliku
+    public void generateRaport10() {
         try {
             Object[] oo = choseGroup.getSelectedItems().toArray();
             List<String> listSymbols = new ArrayList<>();
@@ -142,8 +143,7 @@ public class Main extends VerticalLayout implements View {
                 listSymbols.add(e.toString());
             }
 
-            //FileWriter fileWriter = new FileWriter("C:/DANE/reportWith10Days.txt");
-            FileWriter fileWriter = new FileWriter("reportWith10Days.txt");
+            FileWriter fileWriter = new FileWriter("C:/Users/Żniwi/Downloads/reportWith10Days.txt");//C\Users\Żniwi\Downloads
             PrintWriter writer = new PrintWriter(fileWriter);
 
             List<ExchangeForRaport10Day> listExchange = exchangeRateDao.raport10Days(listSymbols);
@@ -164,8 +164,6 @@ public class Main extends VerticalLayout implements View {
 
                 writer.println(e.getSymbol() + " - " + e.getCurrency() + "\nostatnie 10 notowań: " + Arrays.toString(e.getExchanges()) +
                         "\nśrednia wartość: " + average + "\nnajwyższe notowanie: " + max + "\nnajniższe notowanie: " + min);
-                System.out.println(e.getSymbol() + " - " + e.getCurrency() + "\nostatnie 10 notowań: " + Arrays.toString(e.getExchanges()) +
-                        "\nśrednia wartość: " + average + "\nnajwyższe notowanie: " + max + "\nnajniższe notowanie: " + min);
             }
 
             writer.close();
@@ -179,7 +177,7 @@ public class Main extends VerticalLayout implements View {
     private void generateRaport() {
         try {
             List<ExchangeForRaport> list = exchangeRateDao.raport();
-            FileWriter fw = new FileWriter("report.txt");
+            FileWriter fw = new FileWriter("C:/Users/Żniwi/Downloads/report.txt");
             PrintWriter pw = new PrintWriter(fw);
 
             for (ExchangeForRaport e : list) {

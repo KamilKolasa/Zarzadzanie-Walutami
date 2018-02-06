@@ -29,12 +29,11 @@ public class ExchangeRateImpl implements ExchangeRateDao, Serializable {
     private static Connection connection = DbConnection.getInstance();
 
     @Override
-    public void updateAll() {//ZA ZADNE SKARBY NIE WIEM CZY TO DZIALA WLASCIWIE!!! !!! !!! !!! !!! !!! !!! !!!
+    public void updateAll() {//trzeba to jeszce sprwadzic bo to na szybko bez jakich kolwiek testow zrobione !!! !!! !!! !!! !!! !!! !!! !!!
         try {
             List<ExchangeRate> oldData = getAll();
             List<ExchangeRate> newData = getCurrencies();
 
-            //trzeba to jeszce sprwadzic bo to na szybko bez jakich kolwiek testow zrobione !!!!!!!
             List<String> repeat = new ArrayList<>();
             for (ExchangeRate er : oldData) {
                 String oldSymbol = er.getSymbol();
@@ -87,33 +86,6 @@ public class ExchangeRateImpl implements ExchangeRateDao, Serializable {
                     }
                 }
             }
-
-
-            //------------------------------------------------------------------------------------------------------------------
-            /*oldData.stream().sorted();
-            newData.stream().sorted();
-
-            if (oldData.size() == newData.size()) {
-                for (int i = 0; i < oldData.size(); i++) {
-                    String sql = "UPDATE Exchange_rate SET exchange_today = ?, exchange_yesterday = ? WHERE id = ?";
-                    PreparedStatement prep = connection.prepareStatement(sql);
-                    prep.setDouble(1, newData.get(i).getExchangeToday());
-                    prep.setDouble(2, newData.get(i).getExchangeYesterday());
-                    prep.setLong(3, oldData.get(i).getId());
-                    prep.execute();
-                }
-            } else if (oldData.size() == 0 || oldData == null) {
-                for (int i = 0; i < newData.size(); i++) {
-                    String sql = "INSERT INTO Exchange_rate (currency, symbol, exchange_today, exchange_yesterday) VALUES (?,?,?,?)";
-                    PreparedStatement prep = connection.prepareStatement(sql);
-                    prep.setString(1, newData.get(i).getCurrency());
-                    prep.setString(2, newData.get(i).getSymbol());
-                    prep.setDouble(3, newData.get(i).getExchangeToday());
-                    prep.setDouble(4, newData.get(i).getExchangeYesterday());
-                    prep.execute();
-                }
-            }*/
-            //------------------------------------------------------------------------------------------------------------------
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -294,7 +266,7 @@ public class ExchangeRateImpl implements ExchangeRateDao, Serializable {
             JSONParser parser = new JSONParser();
             URL url = new URL("http://api.nbp.pl/api/exchangerates/rates/a/" + symbol + "/last/10/");
             URLConnection urlConnection = url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(),"utf-8"));
 
             JSONObject jsonOb = (JSONObject) parser.parse(in.readLine());
             JSONArray jsonAr = (JSONArray) jsonOb.get("rates");

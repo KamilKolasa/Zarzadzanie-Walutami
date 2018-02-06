@@ -5,6 +5,7 @@ import com.NBP.dao.ExchangeRateImpl;
 import com.NBP.model.ExchangeForRaport;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 import com.vaadin.navigator.View;
 
@@ -55,18 +56,18 @@ public class Raport extends VerticalLayout implements View {
         return horizontalLayout;
     }
 
-    private String raportIncrease() {//POMOC - czemu nie wypisuje posortowane ???
+    private String raportIncrease() {
         StringBuilder sb = new StringBuilder("");
         List<ExchangeForRaport> list = exchangeRateDao.raport();
+
         list = list
                 .stream()
                 .filter(e -> e.getDifferenceBetweenDays().compareTo(BigDecimal.ZERO) > 0)
-                .sorted(Comparator.comparing(ExchangeForRaport::getDifferenceBetweenDays))
+                .sorted((s1,s2)->s2.getDifferenceBetweenDays().compareTo(s1.getDifferenceBetweenDays()))
                 .collect(Collectors.toList());
 
         for (ExchangeForRaport e : list) {
                 sb.append(e.getSymbol() + " - " + e.getCurrency() + " kurs wzrósł o: " + e.getDifferenceBetweenDays() + "<br><br>");
-                System.out.println(e.getSymbol() + " - " + e.getCurrency() + " kurs wzrósł o: " + e.getDifferenceBetweenDays());
         }
         return sb.toString();
     }
@@ -74,7 +75,13 @@ public class Raport extends VerticalLayout implements View {
     private String raportDecrease() {
         StringBuilder sb = new StringBuilder("");
         List<ExchangeForRaport> list = exchangeRateDao.raport();
-        list.stream().sorted(Comparator.comparingDouble(s -> Double.parseDouble(s.getDifferenceBetweenDays().toString())));
+
+        list = list
+                .stream()
+                .filter(e -> e.getDifferenceBetweenDays().compareTo(BigDecimal.ZERO) < 0)
+                .sorted((s1,s2)->s2.getDifferenceBetweenDays().compareTo(s1.getDifferenceBetweenDays()))
+                .collect(Collectors.toList());
+
         for (ExchangeForRaport e : list) {
             if (Double.parseDouble(e.getDifferenceBetweenDays().toString()) < 0) {
                 sb.append(e.getSymbol() + " - " + e.getCurrency() + " kurs spadł o: " + e.getDifferenceBetweenDays() + "<br><br>");
@@ -86,7 +93,13 @@ public class Raport extends VerticalLayout implements View {
     private String raportConstant() {
         StringBuilder sb = new StringBuilder("");
         List<ExchangeForRaport> list = exchangeRateDao.raport();
-        list.stream().sorted(Comparator.comparingDouble(s -> Double.parseDouble(s.getDifferenceBetweenDays().toString())));
+
+        list = list
+                .stream()
+                .filter(e -> e.getDifferenceBetweenDays().compareTo(BigDecimal.ZERO) == 0)
+                .sorted((s1,s2)->s2.getDifferenceBetweenDays().compareTo(s1.getDifferenceBetweenDays()))
+                .collect(Collectors.toList());
+
         for (ExchangeForRaport e : list) {
             if (Double.parseDouble(e.getDifferenceBetweenDays().toString()) == 0) {
                 sb.append(e.getSymbol() + " - " + e.getCurrency() + " kurs bez zmian<br><br>");
@@ -103,5 +116,10 @@ public class Raport extends VerticalLayout implements View {
 
         addComponent(buttonsLayout);
         addComponent(labelLayout);
+    }
+
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+        System.out.println(event.getParameters());
     }
 }

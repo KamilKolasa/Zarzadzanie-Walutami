@@ -3,22 +3,27 @@ package com.NBP;
 import com.NBP.dao.ExchangeRateDao;
 import com.NBP.dao.ExchangeRateImpl;
 import com.NBP.model.ExchangeForRaport;
+import com.NBP.model.ExchangeForRaport10Day;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class Raport10 extends VerticalLayout implements View{
+public class Raport10 extends VerticalLayout implements View {
 
     private Button btnback = new Button("powrót");
 
     private final Label label = new Label();
+
+    private List<String> listSymbol;
 
     private final ExchangeRateDao exchangeRateDao = new ExchangeRateImpl();
 
@@ -50,17 +55,39 @@ public class Raport10 extends VerticalLayout implements View{
 
     private String raport() {
         StringBuilder sb = new StringBuilder("");
-        List<ExchangeForRaport> list = new ArrayList<>();//POMOC - nie wiem jak pobrac dane ???
-        list.stream().sorted(Comparator.comparingDouble(s -> Double.parseDouble(s.getDifferenceBetweenDays().toString())));
-        for (ExchangeForRaport e : list) {
-            if (Double.parseDouble(e.getDifferenceBetweenDays().toString()) > 0) {
-                sb.append(e.getSymbol() + " - " + e.getCurrency() + " kurs wzrósł o: " + e.getDifferenceBetweenDays() + "<br><br>");
+
+        List<ExchangeForRaport10Day> list = exchangeRateDao.raport10Days(listSymbol);//new ArrayList<>();//DOKONCZYC !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!!
+
+        list = list
+                .stream()
+                .sorted(Comparator.comparing(ExchangeForRaport10Day::getSymbol))
+                .collect(Collectors.toList());
+
+        for (ExchangeForRaport10Day e : list) {
+
+            BigDecimal average = BigDecimal.valueOf(0);
+            Double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
+            for (int i = 0; i < e.getExchanges().length; i++) {
+                average = BigDecimal.valueOf(e.getExchanges()[i]).add(average);
+                if (min > e.getExchanges()[i]) {
+                    min = e.getExchanges()[i];
+                }
+                if (max < e.getExchanges()[i]) {
+                    max = e.getExchanges()[i];
+                }
             }
+            average = average.divide(BigDecimal.valueOf(e.getExchanges().length));
+
+            System.out.println(e.getSymbol() + " - " + e.getCurrency() + "\nostatnie 10 notowań: " + Arrays.toString(e.getExchanges()) +
+                    "\nśrednia wartość: " + average + "\nnajwyższe notowanie: " + max + "\nnajniższe notowanie: " + min);
         }
         return sb.toString();
     }
 
-    public Raport10() {
+
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent event) {
+        listSymbol = Arrays.asList(event.getParameters().split("/"));
         configure();
 
         HorizontalLayout buttonsLayout = createFormButton();
@@ -68,10 +95,5 @@ public class Raport10 extends VerticalLayout implements View{
 
         addComponent(buttonsLayout);
         addComponent(labelLayout);
-    }
-
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent event) {
-        System.out.println(Arrays.asList(event.getParameters().split("/")));
     }
 }
