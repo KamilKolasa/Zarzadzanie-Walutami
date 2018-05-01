@@ -29,7 +29,7 @@ public class Main extends VerticalLayout implements View {
     private final TwinColSelect choseGroup = new TwinColSelect(null, exchangeRateDao.getAllSymbol());//null - tam moge dac tytul
 
 
-    private final MenuBar.Command command = (MenuBar.Command) menuItem -> Notification.show(menuItem.getText(), Notification.Type.TRAY_NOTIFICATION);//wyswietla w rogu jaka opcje wybralismy
+    //private final MenuBar.Command command = (MenuBar.Command) menuItem -> Notification.show(menuItem.getText(), Notification.Type.TRAY_NOTIFICATION);//wyswietla w rogu jaka opcje wybralismy
     private final MenuBar.Command commandSaveRaportToFile = (MenuBar.Command) menuItem -> {
         generateRaport();
     };
@@ -92,7 +92,7 @@ public class Main extends VerticalLayout implements View {
         exchangeRateGrid.setCaption("Exchange Rate");
         //exchangeRateGrid.setColumnOrder("symbol", "exchangeToday", "exchangeYesterday");// 1 - sposob na wyswietlanie kolumn tabeli (zawsze wszystkie wyswietli chyba ze ponizsza linia) mozna tylko kolejnosc ustalic
         //exchangeRateGrid.getColumn("id").setHidden(true);//rozwiazanie by wszystkich nie wyswietlalo
-        exchangeRateGrid.setColumns("symbol", "exchangeToday", "exchangeYesterday");// 2 - sposob wyswietlania kolumn tabeli
+        exchangeRateGrid.setColumns("currency","symbol", "exchangeToday", "exchangeYesterday");// 2 - sposob wyswietlania kolumn tabeli
         exchangeRateGrid.setItems(exchangeRateDao.getAll());
         exchangeRateGrid.setSizeFull();
 

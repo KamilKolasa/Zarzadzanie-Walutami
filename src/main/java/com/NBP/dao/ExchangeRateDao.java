@@ -9,6 +9,9 @@ import java.util.Optional;
 
 public interface ExchangeRateDao {
     void updateAll();
+    void update(ExchangeRate exchangeRate);
+    void add(ExchangeRate exchangeRate);
+    void delete(String symbol);
     List<ExchangeRate> getAll();
     List<String> getAllSymbol();
     Optional<ExchangeRate> getBySymbol(String symbol);

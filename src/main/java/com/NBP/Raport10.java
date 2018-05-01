@@ -56,7 +56,7 @@ public class Raport10 extends VerticalLayout implements View {
     private String raport() {
         StringBuilder sb = new StringBuilder("");
 
-        List<ExchangeForRaport10Day> list = exchangeRateDao.raport10Days(listSymbol);//new ArrayList<>();//DOKONCZYC !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!! !!!
+        List<ExchangeForRaport10Day> list = exchangeRateDao.raport10Days(listSymbol);
 
         list = list
                 .stream()
@@ -78,9 +78,10 @@ public class Raport10 extends VerticalLayout implements View {
             }
             average = average.divide(BigDecimal.valueOf(e.getExchanges().length));
 
-            System.out.println(e.getSymbol() + " - " + e.getCurrency() + "\nostatnie 10 notowań: " + Arrays.toString(e.getExchanges()) +
-                    "\nśrednia wartość: " + average + "\nnajwyższe notowanie: " + max + "\nnajniższe notowanie: " + min);
-        }
+            sb.append(e.getSymbol() + " - " + e.getCurrency() + "<br>ostatnie 10 notowań: " + Arrays.toString(e.getExchanges()) +
+                    "<br>średnia wartość: " + average + "<br>najwyższe notowanie: " + max + "<br>najniższe notowanie: " + min + "<br><br>");
+            }
+
         return sb.toString();
     }
 

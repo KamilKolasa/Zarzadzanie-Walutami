@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
@@ -17,5 +18,14 @@ public class ExchangeRate implements Serializable {
     private String symbol;
     private Double exchangeToday;
     private Double exchangeYesterday;
+
+    public static ExchangeRate findExchangeRateWithSymbolInCollection(List<ExchangeRate> exchangeRates, String symbol) {
+        return exchangeRates == null ? null :
+                exchangeRates
+                .stream()
+                .filter(e -> e.getSymbol().equals(symbol))
+                .findFirst()
+                .orElse(null);
+    }
 }
 
